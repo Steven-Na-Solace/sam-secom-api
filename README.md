@@ -65,11 +65,8 @@ This API provides comprehensive access to semiconductor manufacturing data inclu
 The easiest way to run the API is using Docker:
 
 ```bash
-# Navigate to the project directory
-cd /Users/eyoon/IdeaProjects/sam-db/sam-api
-
 # Make scripts executable (first time only)
-chmod +x start-api.sh stop-api.sh
+chmod +x sam-api/start-api.sh sam-api/stop-api.sh
 
 # Start the API
 ./sam-api/start-api.sh

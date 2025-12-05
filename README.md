@@ -72,6 +72,5 @@ chmod +x sam-api/start-api.sh sam-api/stop-api.sh
 ./sam-api/start-api.sh
 
 **Stop the API:**
-```bash
 ./sam-api/stop-api.sh
 ```

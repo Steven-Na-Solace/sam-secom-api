@@ -1,0 +1,106 @@
+#!/bin/bash
+# ============================================================================
+# SECOM MES Database Initialization - Option C (Hybrid)
+# Main orchestration script for complete database setup
+# ============================================================================
+
+set -e  # Exit on any error
+
+echo "============================================================================"
+echo "SECOM MES Database Initialization - Option C"
+echo "============================================================================"
+echo ""
+
+# Check if Python is installed, install if not
+echo "Step 1: Checking Python installation..."
+if ! command -v python3 &> /dev/null; then
+    echo "  📦 Python not found. Installing Python 3 and pymysql..."
+    apt-get update -qq
+    apt-get install -y -qq python3 python3-pip > /dev/null 2>&1
+    pip3 install --quiet pymysql
+    echo "  ✓ Python 3 and pymysql installed"
+else
+    echo "  ✓ Python 3 already installed"
+    # Ensure pymysql is installed
+    pip3 install --quiet pymysql 2>/dev/null || true
+fi
+echo ""
+
+# Generate feature metadata SQL
+echo "Step 2: Generating feature metadata..."
+python3 /docker-entrypoint-initdb.d/25-feature-meta-generator.py > /docker-entrypoint-initdb.d/25-feature-meta.sql
+echo "  ✓ Feature metadata SQL generated (590 features)"
+echo ""
+
+# Execute SQL scripts in order
+echo "Step 3: Creating database schema..."
+mariadb -u root -p"${MARIADB_ROOT_PASSWORD}" secom < /docker-entrypoint-initdb.d/10-schema.sql
+echo "  ✓ Schema created (9 tables + 4 views)"
+echo ""
+
+echo "Step 4: Loading master data..."
+mariadb -u root -p"${MARIADB_ROOT_PASSWORD}" secom < /docker-entrypoint-initdb.d/20-master-data.sql
+echo "  ✓ Master data loaded (8 equipment, 3 shifts, 15 operators, 4 products)"
+echo ""
+
+echo "Step 5: Loading feature metadata..."
+mariadb -u root -p"${MARIADB_ROOT_PASSWORD}" secom < /docker-entrypoint-initdb.d/25-feature-meta.sql
+echo "  ✓ Feature metadata loaded (590 features)"
+echo ""
+
+echo "Step 6: Loading production data (this may take 2-3 minutes)..."
+python3 /docker-entrypoint-initdb.d/30-load-production-data.py
+echo "  ✓ Production data loaded"
+echo ""
+
+echo "Step 7: Calculating feature importance..."
+mariadb -u root -p"${MARIADB_ROOT_PASSWORD}" secom < /docker-entrypoint-initdb.d/35-calculate-analytics.sql
+echo "  ✓ Analytics calculated"
+echo ""
+
+# Final verification
+echo "============================================================================"
+echo "FINAL VERIFICATION"
+echo "============================================================================"
+
+mariadb -u root -p"${MARIADB_ROOT_PASSWORD}" secom <<'SQL'
+SELECT '✓ Database: secom' as status;
+
+SELECT CONCAT('✓ Tables: ', COUNT(*), ' created') as status
+FROM information_schema.tables
+WHERE table_schema = 'secom' AND table_type = 'BASE TABLE';
+
+SELECT CONCAT('✓ Views: ', COUNT(*), ' created') as status
+FROM information_schema.tables
+WHERE table_schema = 'secom' AND table_type = 'VIEW';
+
+SELECT '✓ Production Summary:' as status;
+SELECT * FROM production_summary;
+
+SELECT '✓ Equipment Health:' as status;
+SELECT equipment_code, total_lots_processed, failed_lots, equipment_fail_rate_pct, health_score
+FROM equipment_health_stats
+ORDER BY equipment_code;
+
+SELECT '✓ Shift Performance:' as status;
+SELECT shift_name, total_lots, fail_count, fail_rate_pct
+FROM shift_performance_comparison
+ORDER BY shift_id;
+SQL
+
+echo ""
+echo "============================================================================"
+echo "✅ SECOM MES DATABASE INITIALIZATION COMPLETE!"
+echo "============================================================================"
+echo ""
+echo "Database is ready for use:"
+echo "  • 9 core tables + 4 analytics views"
+echo "  • 1,567 production lots"
+echo "  • ~700K+ sensor measurements"
+echo "  • AI/ML risk predictions included"
+echo "  • Feature importance calculated"
+echo ""
+echo "Connect using:"
+echo "  docker exec -it secom-db mariadb -u secom_user -psecom_pass secom"
+echo ""
+echo "============================================================================"

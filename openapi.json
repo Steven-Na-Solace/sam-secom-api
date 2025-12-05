@@ -1,0 +1,3062 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "SECOM MES Database API",
+    "description": "REST API for SECOM Manufacturing Execution System Database\n\nThis API provides access to semiconductor manufacturing data including:\n- Master data (Equipment, Shifts, Operators, Product Types, Features)\n- Production data (Lots, Measurements, Quality Results)\n- Analytics (Production summaries, Equipment health, Shift performance, Quality analytics)\n\n**Database**: MariaDB 11.2\n**Total Records**: 1,567 lots with 590 sensor measurements each\n**Time Period**: July 2008 - September 2008\n\n**Key Endpoints**:\n- `/equipment` - Manufacturing equipment management\n- `/lots` - Production lot tracking with filters\n- `/measurements` - Sensor measurement data\n- `/quality` - Quality inspection results\n- `/analytics` - Analytics and reporting endpoints\n",
+    "contact": {
+      "name": "SECOM MES Team",
+      "email": "mes@secom.com"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/api/v1",
+      "description": "Local Development Server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Feature Metadata",
+      "description": "Feature/sensor metadata management endpoints"
+    },
+    {
+      "name": "Operators",
+      "description": "Production operator management endpoints"
+    },
+    {
+      "name": "Lots",
+      "description": "Production lot management endpoints"
+    },
+    {
+      "name": "Product Types",
+      "description": "Product type management endpoints"
+    },
+    {
+      "name": "Analytics",
+      "description": "Analytics and reporting endpoints using database views"
+    },
+    {
+      "name": "Shifts",
+      "description": "Work shift management endpoints"
+    },
+    {
+      "name": "Quality",
+      "description": "Quality result and inspection endpoints"
+    },
+    {
+      "name": "Measurements",
+      "description": "Lot measurement endpoints"
+    },
+    {
+      "name": "Equipment",
+      "description": "Equipment management endpoints"
+    }
+  ],
+  "paths": {
+    "/shifts/{shiftId}": {
+      "get": {
+        "tags": [
+          "Shifts"
+        ],
+        "summary": "Get shift by ID",
+        "description": "Returns a single shift by shift ID",
+        "operationId": "getShiftById",
+        "parameters": [
+          {
+            "name": "shiftId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Shift"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Shifts"
+        ],
+        "summary": "Update shift",
+        "description": "Updates an existing shift record",
+        "operationId": "updateShift",
+        "parameters": [
+          {
+            "name": "shiftId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Shift"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Shift"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Shifts"
+        ],
+        "summary": "Delete shift",
+        "description": "Deletes a shift record",
+        "operationId": "deleteShift",
+        "parameters": [
+          {
+            "name": "shiftId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/quality/results/{qualityResultId}": {
+      "get": {
+        "tags": [
+          "Quality"
+        ],
+        "summary": "Get quality result by ID",
+        "description": "Returns a single quality result by quality result ID",
+        "operationId": "getResultById",
+        "parameters": [
+          {
+            "name": "qualityResultId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/QualityResult"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Quality"
+        ],
+        "summary": "Update quality result",
+        "description": "Updates an existing quality result",
+        "operationId": "updateResult",
+        "parameters": [
+          {
+            "name": "qualityResultId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QualityResult"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/QualityResult"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Quality"
+        ],
+        "summary": "Delete quality result",
+        "description": "Deletes a quality result record",
+        "operationId": "deleteResult",
+        "parameters": [
+          {
+            "name": "qualityResultId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/products/{productTypeId}": {
+      "get": {
+        "tags": [
+          "Product Types"
+        ],
+        "summary": "Get product type by ID",
+        "description": "Returns a single product type by product type ID",
+        "operationId": "getProductTypeById",
+        "parameters": [
+          {
+            "name": "productTypeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductType"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Product Types"
+        ],
+        "summary": "Update product type",
+        "description": "Updates an existing product type record",
+        "operationId": "updateProductType",
+        "parameters": [
+          {
+            "name": "productTypeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductType"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductType"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Product Types"
+        ],
+        "summary": "Delete product type",
+        "description": "Deletes a product type record",
+        "operationId": "deleteProductType",
+        "parameters": [
+          {
+            "name": "productTypeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/operators/{operatorId}": {
+      "get": {
+        "tags": [
+          "Operators"
+        ],
+        "summary": "Get operator by ID",
+        "description": "Returns a single operator by operator ID",
+        "operationId": "getOperatorById",
+        "parameters": [
+          {
+            "name": "operatorId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Operator"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Operators"
+        ],
+        "summary": "Update operator",
+        "description": "Updates an existing operator record",
+        "operationId": "updateOperator",
+        "parameters": [
+          {
+            "name": "operatorId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Operator"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Operator"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Operators"
+        ],
+        "summary": "Delete operator",
+        "description": "Deletes an operator record",
+        "operationId": "deleteOperator",
+        "parameters": [
+          {
+            "name": "operatorId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/lots/{lotId}": {
+      "get": {
+        "tags": [
+          "Lots"
+        ],
+        "summary": "Get lot by ID",
+        "description": "Returns a single lot by lot ID",
+        "operationId": "getLotById",
+        "parameters": [
+          {
+            "name": "lotId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Lot"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Lots"
+        ],
+        "summary": "Update lot",
+        "description": "Updates an existing lot record",
+        "operationId": "updateLot",
+        "parameters": [
+          {
+            "name": "lotId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Lot"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Lot"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Lots"
+        ],
+        "summary": "Delete lot",
+        "description": "Deletes a lot record",
+        "operationId": "deleteLot",
+        "parameters": [
+          {
+            "name": "lotId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/features/{featureId}": {
+      "get": {
+        "tags": [
+          "Feature Metadata"
+        ],
+        "summary": "Get feature by ID",
+        "description": "Returns a single feature metadata by feature ID",
+        "operationId": "getFeatureById",
+        "parameters": [
+          {
+            "name": "featureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeatureMeta"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Feature Metadata"
+        ],
+        "summary": "Update feature",
+        "description": "Updates an existing feature metadata record",
+        "operationId": "updateFeature",
+        "parameters": [
+          {
+            "name": "featureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeatureMeta"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeatureMeta"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Feature Metadata"
+        ],
+        "summary": "Delete feature",
+        "description": "Deletes a feature metadata record",
+        "operationId": "deleteFeature",
+        "parameters": [
+          {
+            "name": "featureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/equipment/{equipmentId}": {
+      "get": {
+        "tags": [
+          "Equipment"
+        ],
+        "summary": "Get equipment by ID",
+        "description": "Returns a single equipment by equipment ID",
+        "operationId": "getEquipmentById",
+        "parameters": [
+          {
+            "name": "equipmentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Equipment"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Equipment"
+        ],
+        "summary": "Update equipment",
+        "description": "Updates an existing equipment record",
+        "operationId": "updateEquipment",
+        "parameters": [
+          {
+            "name": "equipmentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Equipment"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Equipment"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Equipment"
+        ],
+        "summary": "Delete equipment",
+        "description": "Deletes an equipment record",
+        "operationId": "deleteEquipment",
+        "parameters": [
+          {
+            "name": "equipmentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/shifts": {
+      "get": {
+        "tags": [
+          "Shifts"
+        ],
+        "summary": "Get all shifts",
+        "description": "Returns list of all work shifts",
+        "operationId": "getAllShifts",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Shift"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Shifts"
+        ],
+        "summary": "Create new shift",
+        "description": "Creates a new shift record",
+        "operationId": "createShift",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Shift"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Shift"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/quality/results": {
+      "get": {
+        "tags": [
+          "Quality"
+        ],
+        "summary": "Get all quality results",
+        "description": "Returns paginated list of all quality inspection results",
+        "operationId": "getAllResults",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageQualityResult"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Quality"
+        ],
+        "summary": "Create new quality result",
+        "description": "Creates a new quality inspection result",
+        "operationId": "createResult",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QualityResult"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/QualityResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "tags": [
+          "Product Types"
+        ],
+        "summary": "Get all product types",
+        "description": "Returns list of all product types",
+        "operationId": "getAllProductTypes",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductType"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Product Types"
+        ],
+        "summary": "Create new product type",
+        "description": "Creates a new product type record",
+        "operationId": "createProductType",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductType"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductType"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/operators": {
+      "get": {
+        "tags": [
+          "Operators"
+        ],
+        "summary": "Get all operators",
+        "description": "Returns list of all production operators",
+        "operationId": "getAllOperators",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Operator"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Operators"
+        ],
+        "summary": "Create new operator",
+        "description": "Creates a new operator record",
+        "operationId": "createOperator",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Operator"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Operator"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/measurements": {
+      "post": {
+        "tags": [
+          "Measurements"
+        ],
+        "summary": "Create new measurement",
+        "description": "Creates a new lot measurement record",
+        "operationId": "createMeasurement",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LotMeasurement"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/LotMeasurement"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lots": {
+      "get": {
+        "tags": [
+          "Lots"
+        ],
+        "summary": "Get all lots with filters",
+        "description": "Returns paginated list of lots with optional filters for equipment, operator, status, and date range",
+        "operationId": "getAllLots",
+        "parameters": [
+          {
+            "name": "equipmentId",
+            "in": "query",
+            "description": "Equipment ID filter",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "operatorId",
+            "in": "query",
+            "description": "Operator ID filter",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Status filter (in_progress, completed, quality_hold, released, scrapped)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Start date filter (ISO format: 2008-07-01T00:00:00)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "End date filter (ISO format: 2008-09-30T23:59:59)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageLot"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Lots"
+        ],
+        "summary": "Create new lot",
+        "description": "Creates a new production lot record",
+        "operationId": "createLot",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Lot"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Lot"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/features": {
+      "get": {
+        "tags": [
+          "Feature Metadata"
+        ],
+        "summary": "Get all features",
+        "description": "Returns paginated list of all feature metadata (590 features)",
+        "operationId": "getAllFeatures",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageFeatureMeta"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Feature Metadata"
+        ],
+        "summary": "Create new feature",
+        "description": "Creates a new feature metadata record",
+        "operationId": "createFeature",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeatureMeta"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeatureMeta"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/equipment": {
+      "get": {
+        "tags": [
+          "Equipment"
+        ],
+        "summary": "Get all equipment",
+        "description": "Returns list of all manufacturing equipment",
+        "operationId": "getAllEquipment",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Equipment"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Equipment"
+        ],
+        "summary": "Create new equipment",
+        "description": "Creates a new equipment record",
+        "operationId": "createEquipment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Equipment"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Equipment"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shifts/code/{code}": {
+      "get": {
+        "tags": [
+          "Shifts"
+        ],
+        "summary": "Get shift by code",
+        "description": "Returns shift by unique shift code (DAY, SWING, NIGHT)",
+        "operationId": "getShiftByCode",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Shift"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/quality/results/passed": {
+      "get": {
+        "tags": [
+          "Quality"
+        ],
+        "summary": "Get passed lots",
+        "description": "Returns all lots that passed quality inspection (classification = -1)",
+        "operationId": "getPassedResults",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageQualityResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/quality/results/lot/{lotId}": {
+      "get": {
+        "tags": [
+          "Quality"
+        ],
+        "summary": "Get quality result for a lot",
+        "description": "Returns quality result for a specific lot",
+        "operationId": "getResultByLotId",
+        "parameters": [
+          {
+            "name": "lotId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/QualityResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/quality/results/high-risk": {
+      "get": {
+        "tags": [
+          "Quality"
+        ],
+        "summary": "Get high-risk lots",
+        "description": "Returns lots with predicted risk above threshold (default 0.7)",
+        "operationId": "getHighRiskResults",
+        "parameters": [
+          {
+            "name": "threshold",
+            "in": "query",
+            "description": "Risk threshold (0.0 to 1.0)",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "default": 0.7
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/QualityResult"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/quality/results/failed": {
+      "get": {
+        "tags": [
+          "Quality"
+        ],
+        "summary": "Get failed lots",
+        "description": "Returns all lots that failed quality inspection (classification = 1)",
+        "operationId": "getFailedResults",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageQualityResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/quality/results/defect/{type}": {
+      "get": {
+        "tags": [
+          "Quality"
+        ],
+        "summary": "Get results by defect type",
+        "description": "Returns quality results filtered by defect type (electrical_fail, dimensional_oor, etc.)",
+        "operationId": "getResultsByDefectType",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/QualityResult"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products/family/{family}": {
+      "get": {
+        "tags": [
+          "Product Types"
+        ],
+        "summary": "Get product types by family",
+        "description": "Returns all product types in a specific family (Logic, Memory, Analog)",
+        "operationId": "getProductTypesByFamily",
+        "parameters": [
+          {
+            "name": "family",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductType"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products/code/{code}": {
+      "get": {
+        "tags": [
+          "Product Types"
+        ],
+        "summary": "Get product type by code",
+        "description": "Returns product type by unique product code",
+        "operationId": "getProductTypeByCode",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductType"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/operators/{operatorId}/lots": {
+      "get": {
+        "tags": [
+          "Operators"
+        ],
+        "summary": "Get operator's lots",
+        "description": "Returns all lots processed by a specific operator",
+        "operationId": "getOperatorLots",
+        "parameters": [
+          {
+            "name": "operatorId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Lot"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/operators/department/{department}": {
+      "get": {
+        "tags": [
+          "Operators"
+        ],
+        "summary": "Get operators by department",
+        "description": "Returns all operators in a specific department",
+        "operationId": "getOperatorsByDepartment",
+        "parameters": [
+          {
+            "name": "department",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Operator"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/operators/code/{code}": {
+      "get": {
+        "tags": [
+          "Operators"
+        ],
+        "summary": "Get operator by code",
+        "description": "Returns operator by unique operator code",
+        "operationId": "getOperatorByCode",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Operator"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/measurements/lot/{lotId}": {
+      "get": {
+        "tags": [
+          "Measurements"
+        ],
+        "summary": "Get measurements for a lot",
+        "description": "Returns all sensor measurements for a specific lot (typically 590 measurements)",
+        "operationId": "getMeasurementsByLot",
+        "parameters": [
+          {
+            "name": "lotId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LotMeasurement"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/measurements/lot/{lotId}/anomalies": {
+      "get": {
+        "tags": [
+          "Measurements"
+        ],
+        "summary": "Get out-of-spec measurements for a lot",
+        "description": "Returns only measurements that are outside normal specification ranges",
+        "operationId": "getAnomaliesByLot",
+        "parameters": [
+          {
+            "name": "lotId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LotMeasurement"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/measurements/feature/{featureId}": {
+      "get": {
+        "tags": [
+          "Measurements"
+        ],
+        "summary": "Get measurements for a feature",
+        "description": "Returns all measurements for a specific sensor/feature across all lots",
+        "operationId": "getMeasurementsByFeature",
+        "parameters": [
+          {
+            "name": "featureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LotMeasurement"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/measurements/anomalies": {
+      "get": {
+        "tags": [
+          "Measurements"
+        ],
+        "summary": "Get all out-of-spec measurements",
+        "description": "Returns paginated list of all measurements outside normal specification ranges",
+        "operationId": "getAllAnomalies",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageLotMeasurement"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lots/number/{lotNumber}": {
+      "get": {
+        "tags": [
+          "Lots"
+        ],
+        "summary": "Get lot by lot number",
+        "description": "Returns lot by unique lot number",
+        "operationId": "getLotByNumber",
+        "parameters": [
+          {
+            "name": "lotNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Lot"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/features/search": {
+      "get": {
+        "tags": [
+          "Feature Metadata"
+        ],
+        "summary": "Search features",
+        "description": "Search features by name or category",
+        "operationId": "searchFeatures",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FeatureMeta"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/features/critical": {
+      "get": {
+        "tags": [
+          "Feature Metadata"
+        ],
+        "summary": "Get critical features",
+        "description": "Returns all features marked as critical quality parameters",
+        "operationId": "getCriticalFeatures",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FeatureMeta"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/features/code/{code}": {
+      "get": {
+        "tags": [
+          "Feature Metadata"
+        ],
+        "summary": "Get feature by code",
+        "description": "Returns feature metadata by unique feature code (F0-F589)",
+        "operationId": "getFeatureByCode",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeatureMeta"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/features/category/{category}": {
+      "get": {
+        "tags": [
+          "Feature Metadata"
+        ],
+        "summary": "Get features by category",
+        "description": "Returns all features in a specific category (CVD_Process, Etch_Process, etc.)",
+        "operationId": "getFeaturesByCategory",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FeatureMeta"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/equipment/type/{type}": {
+      "get": {
+        "tags": [
+          "Equipment"
+        ],
+        "summary": "Get equipment by type",
+        "description": "Returns all equipment of a specific type (CVD, Etcher, etc.)",
+        "operationId": "getEquipmentByType",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Equipment"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/equipment/code/{code}": {
+      "get": {
+        "tags": [
+          "Equipment"
+        ],
+        "summary": "Get equipment by code",
+        "description": "Returns equipment by unique equipment code",
+        "operationId": "getEquipmentByCode",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Equipment"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/summary": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Get production summary",
+        "description": "Returns overall production KPIs from production_summary view",
+        "operationId": "getProductionSummary",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductionSummaryDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/shift-performance": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Get shift performance comparison",
+        "description": "Returns performance metrics by shift from shift_performance_comparison view",
+        "operationId": "getShiftPerformance",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ShiftPerformanceDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/risk-distribution": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Get risk score distribution",
+        "description": "Returns histogram of predicted risk scores",
+        "operationId": "getRiskDistribution",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/quality-summary": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Get quality analytics summary",
+        "description": "Returns defect type breakdown from quality_analytics_summary view",
+        "operationId": "getQualitySummary",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/QualityAnalyticsDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/high-risk-lots": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Get high-risk lots above threshold",
+        "description": "Returns lots with predicted risk above specified threshold with detailed information",
+        "operationId": "getHighRiskLots",
+        "parameters": [
+          {
+            "name": "threshold",
+            "in": "query",
+            "description": "Risk threshold (0.0 to 1.0)",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "default": 0.7
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Limit results (default 50)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HighRiskLotDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/feature-importance": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Get feature importance rankings",
+        "description": "Returns top features by importance score for a specific defect type or overall",
+        "operationId": "getFeatureImportance",
+        "parameters": [
+          {
+            "name": "defectType",
+            "in": "query",
+            "description": "Defect type (overall, electrical_fail, dimensional_oor, etc.)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "overall"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Limit results (default 10)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/equipment-health": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Get equipment health statistics",
+        "description": "Returns health metrics for all equipment from equipment_health_stats view",
+        "operationId": "getEquipmentHealth",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EquipmentHealthDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/defect-distribution": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Get defect type distribution",
+        "description": "Returns distribution of defect types across failed lots",
+        "operationId": "getDefectDistribution",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/measurements/{measurementId}": {
+      "delete": {
+        "tags": [
+          "Measurements"
+        ],
+        "summary": "Delete measurement",
+        "description": "Deletes a measurement record",
+        "operationId": "deleteMeasurement",
+        "parameters": [
+          {
+            "name": "measurementId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LocalTime": {
+        "type": "object",
+        "properties": {
+          "hour": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minute": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "second": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nano": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Shift": {
+        "type": "object",
+        "properties": {
+          "shiftId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "shiftCode": {
+            "type": "string"
+          },
+          "shiftName": {
+            "type": "string"
+          },
+          "startTime": {
+            "$ref": "#/components/schemas/LocalTime"
+          },
+          "endTime": {
+            "$ref": "#/components/schemas/LocalTime"
+          },
+          "description": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Equipment": {
+        "type": "object",
+        "properties": {
+          "equipmentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "equipmentCode": {
+            "type": "string"
+          },
+          "equipmentName": {
+            "type": "string"
+          },
+          "equipmentType": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "manufacturer": {
+            "type": "string"
+          },
+          "installDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "status": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Lot": {
+        "type": "object",
+        "properties": {
+          "lotId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lotNumber": {
+            "type": "string"
+          },
+          "productType": {
+            "$ref": "#/components/schemas/ProductType"
+          },
+          "equipment": {
+            "$ref": "#/components/schemas/Equipment"
+          },
+          "operator": {
+            "$ref": "#/components/schemas/Operator"
+          },
+          "shift": {
+            "$ref": "#/components/schemas/Shift"
+          },
+          "productionStart": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "productionEnd": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "waferCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Operator": {
+        "type": "object",
+        "properties": {
+          "operatorId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "operatorCode": {
+            "type": "string"
+          },
+          "operatorName": {
+            "type": "string"
+          },
+          "employeeNumber": {
+            "type": "string"
+          },
+          "department": {
+            "type": "string"
+          },
+          "hireDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "email": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ProductType": {
+        "type": "object",
+        "properties": {
+          "productTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "productCode": {
+            "type": "string"
+          },
+          "productName": {
+            "type": "string"
+          },
+          "productFamily": {
+            "type": "string"
+          },
+          "targetYield": {
+            "type": "number"
+          },
+          "specificationVersion": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "QualityResult": {
+        "type": "object",
+        "properties": {
+          "resultId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lot": {
+            "$ref": "#/components/schemas/Lot"
+          },
+          "classification": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "testTimestampRaw": {
+            "type": "string"
+          },
+          "testDatetime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "predictedRisk": {
+            "type": "number"
+          },
+          "riskScore": {
+            "type": "number"
+          },
+          "riskFactors": {
+            "type": "string"
+          },
+          "modelVersion": {
+            "type": "string"
+          },
+          "qualityScore": {
+            "type": "number"
+          },
+          "defectType": {
+            "type": "string"
+          },
+          "defectCode": {
+            "type": "string"
+          },
+          "defectLocation": {
+            "type": "string"
+          },
+          "inspector": {
+            "$ref": "#/components/schemas/Operator"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "reviewer": {
+            "$ref": "#/components/schemas/Operator"
+          },
+          "reviewedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "disposition": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "FeatureMeta": {
+        "type": "object",
+        "properties": {
+          "featureId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "featureCode": {
+            "type": "string"
+          },
+          "featureName": {
+            "type": "string"
+          },
+          "featureCategory": {
+            "type": "string"
+          },
+          "processStage": {
+            "type": "string"
+          },
+          "measurementType": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "normalRangeMin": {
+            "type": "number",
+            "format": "double"
+          },
+          "normalRangeMax": {
+            "type": "number",
+            "format": "double"
+          },
+          "description": {
+            "type": "string"
+          },
+          "isCritical": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "LotMeasurement": {
+        "type": "object",
+        "properties": {
+          "measurementId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "lot": {
+            "$ref": "#/components/schemas/Lot"
+          },
+          "feature": {
+            "$ref": "#/components/schemas/FeatureMeta"
+          },
+          "measurementValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "isOutOfSpec": {
+            "type": "boolean"
+          },
+          "measuredAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PageQualityResult": {
+        "type": "object",
+        "properties": {
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QualityResult"
+            }
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortObject"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "empty": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PageableObject": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortObject"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "paged": {
+            "type": "boolean"
+          },
+          "unpaged": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SortObject": {
+        "type": "object",
+        "properties": {
+          "empty": {
+            "type": "boolean"
+          },
+          "sorted": {
+            "type": "boolean"
+          },
+          "unsorted": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PageLotMeasurement": {
+        "type": "object",
+        "properties": {
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LotMeasurement"
+            }
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortObject"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "empty": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PageLot": {
+        "type": "object",
+        "properties": {
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Lot"
+            }
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortObject"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "empty": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PageFeatureMeta": {
+        "type": "object",
+        "properties": {
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FeatureMeta"
+            }
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortObject"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "empty": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProductionSummaryDto": {
+        "type": "object",
+        "properties": {
+          "totalLots": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "activeEquipmentCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "activeOperatorCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "passCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "failCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "failRatePct": {
+            "type": "number"
+          },
+          "avgQualityScore": {
+            "type": "number"
+          },
+          "firstProductionDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastProductionDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ShiftPerformanceDto": {
+        "type": "object",
+        "properties": {
+          "shiftId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "shiftCode": {
+            "type": "string"
+          },
+          "shiftName": {
+            "type": "string"
+          },
+          "totalLots": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "passCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "failCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "failRatePct": {
+            "type": "number"
+          },
+          "avgQualityScore": {
+            "type": "number"
+          },
+          "operatorCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "equipmentUsed": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "QualityAnalyticsDto": {
+        "type": "object",
+        "properties": {
+          "defectType": {
+            "type": "string"
+          },
+          "occurrenceCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "pctOfFailures": {
+            "type": "number"
+          },
+          "avgQualityScore": {
+            "type": "number"
+          },
+          "affectedProductFamilies": {
+            "type": "string"
+          },
+          "affectedEquipmentTypes": {
+            "type": "string"
+          }
+        }
+      },
+      "HighRiskLotDto": {
+        "type": "object",
+        "properties": {
+          "lotNumber": {
+            "type": "string"
+          },
+          "productName": {
+            "type": "string"
+          },
+          "equipmentCode": {
+            "type": "string"
+          },
+          "predictedRisk": {
+            "type": "number"
+          },
+          "riskScore": {
+            "type": "number"
+          },
+          "testDatetime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "actualClassification": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "EquipmentHealthDto": {
+        "type": "object",
+        "properties": {
+          "equipmentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "equipmentCode": {
+            "type": "string"
+          },
+          "equipmentName": {
+            "type": "string"
+          },
+          "equipmentType": {
+            "type": "string"
+          },
+          "equipmentStatus": {
+            "type": "string"
+          },
+          "totalLotsProcessed": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "failedLots": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "equipmentFailRatePct": {
+            "type": "number"
+          },
+          "avgQualityScore": {
+            "type": "number"
+          },
+          "daysOperated": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "lotsBetweenFailures": {
+            "type": "number"
+          },
+          "healthScore": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}

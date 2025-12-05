@@ -1,0 +1,72 @@
+spring:
+  application:
+    name: secom-mes-api
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mariadb://localhost:3306/secom}
+    username: ${SPRING_DATASOURCE_USERNAME:secom_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:secom_pass}
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none  # IMPORTANT: Database already exists, don't auto-create
+    show-sql: true  # Enable SQL logging for debugging
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MariaDBDialect
+        enable_lazy_load_no_trans: true
+        use_sql_comments: true  # Add comments to SQL for better traceability
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+      fail-on-empty-beans: false
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api/v1
+
+springdoc:
+  api-docs:
+    path: /docs
+  swagger-ui:
+    path: /swagger
+    tags-sorter: alpha
+    operations-sorter: method
+
+# Logging Configuration
+logging:
+  level:
+    # Root logging level
+    root: INFO
+
+    # Spring Framework - Web request/response logging
+    org.springframework.web: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: DEBUG
+    org.springframework.web.servlet.DispatcherServlet: DEBUG
+
+    # Application controllers - detailed execution logging
+    com.secom.mes.controller: DEBUG
+    com.secom.mes.service: DEBUG
+    com.secom.mes.repository: DEBUG
+
+    # Hibernate/JPA SQL logging (already controlled by show-sql, but adding for completeness)
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+    # Spring Boot web server
+    org.springframework.boot.web: DEBUG
+
+    # Request/Response payload logging
+    org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor: DEBUG
+
+    # Exception handling
+    org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver: DEBUG
+
+  pattern:
+    # Custom log pattern for better readability
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+  # Log to console (important for Docker logs)
+  console:
+    enabled: true

@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  secom-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: secom-api
+    ports:
+      - "8080:8080"
+    environment:
+      # Database connection using host.docker.internal to connect to database running in separate container
+      SPRING_DATASOURCE_URL: jdbc:mariadb://host.docker.internal:3306/secom
+      SPRING_DATASOURCE_USERNAME: secom_user
+      SPRING_DATASOURCE_PASSWORD: secom_pass
+      # JPA settings
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+      SPRING_JPA_SHOW_SQL: "false"
+      # Logging
+      LOGGING_LEVEL_COM_SECOM: INFO
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK: INFO
+    extra_hosts:
+      # Allow container to access host's localhost (where database container is accessible)
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/api/v1/equipment || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+    networks:
+      - secom-network
+
+networks:
+  secom-network:
+    driver: bridge
